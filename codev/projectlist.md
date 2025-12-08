@@ -744,7 +744,7 @@ Projects that are paused or canceled.
   - id: "0038"
     title: "Consult PR Mode"
     summary: "Add pr subcommand to consult tool for optimized PR reviews with pre-fetched data and verdict extraction"
-    status: spec-draft
+    status: integrated
     priority: medium
     release: null
     files:
@@ -753,21 +753,21 @@ Projects that are paused or canceled.
       review: null
     dependencies: ["0022"]
     tags: [cli, consultation, performance]
-    notes: "TICK protocol. Pre-fetch PR diff/comments/specs to tmp files (6 commands vs 19+), extract verdict from output. 30% faster than current approach (138s vs 200s+)."
+    notes: "TICK protocol. Implemented as part of consult tool evolution. Pre-fetch PR diff/comments/specs, extract verdict from output."
 
   - id: "0041"
     title: "E2E Test Suite"
     summary: "Automated end-to-end tests for @cluesmith/codev npm package installation and CLI commands"
-    status: implementing
+    status: integrated
     priority: high
     release: null
     files:
       spec: codev/specs/0041-e2e-test-suite.md
       plan: codev/plans/0041-e2e-test-suite.md
-      review: null
+      review: codev/reviews/0041-e2e-test-suite.md
     dependencies: ["0039"]
     tags: [testing, npm, ci]
-    notes: "SPIDER protocol. 3-way reviewed. BATS-based tests with XDG sandboxing, tarball testing before publish, CI for macOS+Linux."
+    notes: "SPIDER protocol. PR #78 merged 2025-12-08. BATS-based tests with XDG sandboxing, CI for macOS+Linux."
 
   - id: "0042"
     title: "Namespace Builder Sessions"
