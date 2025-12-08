@@ -140,7 +140,7 @@ Projects currently in development (conceived through committed), sorted by prior
   - id: "0040"
     title: "TICK as SPIDER Amendment"
     summary: "Rework TICK to be amendments to existing SPIDER specs/plans rather than a separate protocol"
-    status: specified
+    status: implemented
     priority: high
     release: null
     files:
@@ -149,7 +149,7 @@ Projects currently in development (conceived through committed), sorted by prior
       review: null
     dependencies: []
     tags: [protocols, architecture]
-    notes: "Human approved 2025-12-08. 3-way reviewed. Ready for planning."
+    notes: "Human approved 2025-12-08. Implemented 2025-12-08. Updated templates (spec.md, plan.md), rewrote TICK protocol, updated CLAUDE.md/AGENTS.md. Tested with TICK 0022-001."
 
   - id: "0014"
     title: "Flexible Builder Spawning"

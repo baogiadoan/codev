@@ -2,137 +2,126 @@
 **T**ask **I**dentification, **C**oding, **K**ickout
 
 ## Overview
-TICK is a streamlined development protocol for rapid, autonomous implementation. Unlike SPIDER's multi-phase approach with intermediate reviews, TICK runs in a single autonomous step from specification to implementation, with multi-agent consultation only at the review phase.
 
-**Core Principle**: Fast iteration for simple tasks - spec, plan, implement, review. No intermediate checkpoints. Multi-agent validation at the end.
+TICK is an **amendment workflow** for existing SPIDER specifications. Rather than creating new standalone specs, TICK modifies existing spec and plan documents in-place, tracking changes in an "Amendments" section.
+
+**Core Principle**: TICK is for *refining* existing specs. SPIDER is for *creating* new specs.
+
+**Key Insight**: TICKs are not small SPIDERs - they're amendments to existing SPIDERs. This eliminates the "TICK vs SPIDER" decision problem and keeps related work together.
 
 ## When to Use TICK
 
-### Use TICK for:
-- Small features (< 300 lines of code)
-- Well-defined tasks with clear requirements
-- Bug fixes with known solutions
-- Straightforward refactoring
-- Configuration changes with logic
-- Simple API endpoints
-- Utility function additions
+### Use TICK when:
+- Making **amendments to an existing SPIDER spec** that is already `integrated`
+- Small scope (< 300 lines of new/changed code)
+- Requirements are clear and well-defined
+- No fundamental architecture changes
+- Examples:
+  - Adding a feature to an existing system (e.g., "add password reset to user auth")
+  - Bug fixes that extend existing functionality
+  - Configuration changes with logic
+  - Utility function additions to existing modules
+  - Refactoring within an existing feature
 
-### Use SPIDER instead for:
-- Complex features requiring multiple phases
-- Architecture changes
+### Use SPIDER instead when:
+- Creating a **new feature from scratch** (no existing spec to amend)
+- Major architecture changes (scope too large for amendment)
 - Unclear requirements needing exploration
-- Performance optimization initiatives
-- System design decisions
-- Features requiring stakeholder alignment
+- > 300 lines of code
+- Multiple stakeholders need alignment
 
-## Protocol Workflow
+### Cannot Use TICK when:
+- No relevant SPIDER spec exists (create a new SPIDER spec instead)
+- Target spec is not yet `integrated` (complete the SPIDER cycle first)
 
-### Single Autonomous Step
+## Amendment Workflow
 
-**Total Duration**: One continuous execution from start to finish
+### Phase 1: Identify Target Spec
 
-**Phases** (executed sequentially without user intervention):
-1. **Specification** - Define what needs to be built
-2. **Planning** - Create single-phase implementation plan
-3. **Implementation** - Execute the plan
-4. **Review** - Document what was done and lessons learned
-
-**User Checkpoints**:
-- **Start**: User provides task description
-- **End**: User reviews completed work and provides feedback
-
-## Detailed Workflow
-
-### 1. Specification (Autonomous)
-
-**Input**: User task description
+**Input**: User describes the amendment needed
 
 **Agent Actions**:
-1. Analyze the task requirements
-2. Identify scope and constraints
-3. Define success criteria
-4. Generate specification document
-5. **COMMIT**: "TICK Spec: [descriptive-name]"
+1. Analyze the amendment requirements
+2. Search for the relevant existing spec to amend
+3. Verify the spec exists and is `integrated`
+4. Load current spec and plan documents
+5. Determine next TICK number (count existing TICK entries + 1)
 
-**Output**: `codev/specs/####-descriptive-name.md`
+**Example**:
+```
+User: "Use TICK to add password reset to the auth system"
+Agent finds: specs/0002-user-authentication.md (status: integrated)
+Agent determines: Next TICK is TICK-001 (first amendment)
+```
 
-**Template**: `templates/spec.md`
-
-**Key Sections**:
-- Problem statement
-- Scope (in/out)
-- Success criteria
-- Assumptions
-- No multi-agent consultation
-- No user review at this stage
-
-### 2. Planning (Autonomous)
-
-**Input**: Generated specification
+### Phase 2: Specification Amendment (Autonomous)
 
 **Agent Actions**:
-1. Break work into logical steps (NOT phases)
-2. Identify file changes needed
-3. Define implementation order
-4. Generate plan document
-5. **COMMIT**: "TICK Plan: [descriptive-name]"
+1. Analyze what needs to change in the spec
+2. Update relevant sections of `specs/####-name.md`:
+   - Problem Statement (if scope expands)
+   - Success Criteria (if new criteria added)
+   - Solution Approaches (if design changes)
+   - Any other section that needs updating
+3. Add entry to "Amendments" section at bottom:
+   ```markdown
+   ### TICK-001: [Title] (YYYY-MM-DD)
 
-**Output**: `codev/plans/####-descriptive-name.md`
+   **Summary**: [One-line description]
 
-**Template**: `templates/plan.md`
+   **Problem Addressed**:
+   [Why this amendment was needed]
 
-**Key Sections**:
-- Implementation steps (sequential)
-- Files to create/modify
-- Testing approach
-- Single-phase execution (no breaking into phases)
-- No time estimates
-- No user review at this stage
+   **Spec Changes**:
+   - [Section]: [What changed]
 
-### 3. Implementation (Autonomous)
+   **Plan Changes**:
+   - [Phase/steps]: [What was added/modified]
 
-**Input**: Generated plan
+   **Review**: See `reviews/####-name-tick-001.md`
+   ```
+4. **COMMIT**: `[TICK ####-NNN] Spec: [description]`
+
+### Phase 3: Planning Amendment (Autonomous)
 
 **Agent Actions**:
-1. Execute implementation steps in order
-2. Write code following plan
+1. Update `plans/####-name.md` with new implementation steps
+2. Add/modify phases as needed
+3. Add entry to "Amendment History" section at bottom:
+   ```markdown
+   ### TICK-001: [Title] (YYYY-MM-DD)
+
+   **Changes**:
+   - [Phase added]: [Description]
+   - [Implementation steps]: [What was updated]
+
+   **Review**: See `reviews/####-name-tick-001.md`
+   ```
+4. **COMMIT**: `[TICK ####-NNN] Plan: [description]`
+
+### Phase 4: Implementation (Autonomous)
+
+**Agent Actions**:
+1. Execute implementation steps from the plan
+2. Write code following fail-fast principles
 3. Test functionality
-4. **COMMIT**: "TICK Impl: [descriptive-name]"
+4. **COMMIT**: `[TICK ####-NNN] Impl: [description]`
 
-**Output**: Working code committed to repository
-
-**Notes**:
-- Follow fail-fast principles from AGENTS.md/CLAUDE.md
-- Test before committing
-- No user approval needed during implementation
-- Single commit for all changes
-
-### 4. Review (User Checkpoint)
-
-**Input**: Completed implementation
+### Phase 5: Review (User Checkpoint)
 
 **Agent Actions**:
-1. Generate review document with:
-   - What was implemented
-   - Challenges encountered
-   - Deviations from plan
+1. Create review document: `reviews/####-name-tick-NNN.md`
+   - What was amended and why
+   - Changes made to spec and plan
+   - Implementation challenges
    - Lessons learned
-2. **Multi-Agent Consultation** (DEFAULT - MANDATORY):
+2. **Multi-Agent Consultation** (MANDATORY):
    - Consult GPT-5 AND Gemini Pro
    - Focus: Code quality, missed issues, improvements
    - Update review with consultation feedback
-3. **Update Architecture Documentation**:
-   - Use architecture-documenter agent to update `codev/resources/arch.md`
-   - Document new modules, utilities, or architectural changes
-   - Ensure arch.md reflects current codebase state
-4. **COMMIT**: "TICK Review: [descriptive-name]" (includes consultation findings and arch.md updates)
-5. **PRESENT TO USER**: Show summary with consultation insights and ask for feedback
-
-**Output**: `codev/reviews/####-descriptive-name.md`
-
-**Template**: `templates/review.md`
-
-**⚠️ BLOCKING**: Cannot present to user without consultation (unless explicitly disabled)
+3. **Update Architecture Documentation** (if applicable)
+4. **COMMIT**: `[TICK ####-NNN] Review: [description]`
+5. **PRESENT TO USER**: Show summary with consultation insights
 
 **User Actions**:
 - Review completed work
@@ -141,110 +130,148 @@ TICK is a streamlined development protocol for rapid, autonomous implementation.
 
 **If Changes Requested**:
 - Agent makes changes
-- Commits: "TICK Fixes: [descriptive-name]"
+- Commits: `[TICK ####-NNN] Fixes: [description]`
 - Updates review document
 - Repeats until user approval
 
 ## File Naming Convention
 
-All three files share the same sequential identifier and name:
-- `specs/0001-feature-name.md`
-- `plans/0001-feature-name.md`
-- `reviews/0001-feature-name.md`
+TICK amendments modify existing files and create new review files:
 
-Sequential numbering continues across SPIDER and TICK protocols.
+| File Type | Pattern | Example |
+|-----------|---------|---------|
+| Spec (modified) | `specs/####-name.md` | `specs/0002-user-authentication.md` |
+| Plan (modified) | `plans/####-name.md` | `plans/0002-user-authentication.md` |
+| Review (new) | `reviews/####-name-tick-NNN.md` | `reviews/0002-user-authentication-tick-001.md` |
+
+**Note**: Spec and plan files are modified in-place. Only the review file is new.
 
 ## Git Commit Strategy
 
-**TICK uses 4 commits per task**:
-1. Specification: `TICK Spec: Add user authentication`
-2. Plan: `TICK Plan: Add user authentication`
-3. Implementation: `TICK Impl: Add user authentication`
-4. Review (includes multi-agent consultation): `TICK Review: Add user authentication`
+**TICK commits reference the parent spec and TICK number**:
 
-Additional commits if changes requested:
-- `TICK Fixes: Add user authentication` (can be multiple)
+```
+[TICK 0002-001] Spec: Add password reset feature
+[TICK 0002-001] Plan: Add password reset implementation
+[TICK 0002-001] Impl: Add password reset feature
+[TICK 0002-001] Review: Password reset implementation
+[TICK 0002-001] Fixes: Address review feedback
+```
+
+The format `[TICK ####-NNN]` identifies:
+- `####`: Parent spec number (e.g., 0002)
+- `NNN`: TICK amendment number (e.g., 001, 002, 003)
 
 ## Key Differences from SPIDER
 
 | Aspect | SPIDER | TICK |
 |--------|--------|------|
-| User checkpoints | Multiple (after spec, plan, each phase) | Two (start, end) |
-| Multi-agent consultation | Throughout (spec, plan, implementation, review) | End only (review) |
-| Implementation phases | Multiple | Single |
-| Review timing | Continuous | End only |
-| Complexity | High | Low |
-| Speed | Slower, thorough | Fast, autonomous |
+| Purpose | Create new features | Amend existing features |
+| File creation | Creates new spec/plan/review | Modifies spec/plan, creates review |
+| Sequential numbering | Gets new number (0001, 0002) | Uses parent's number (0002-001) |
+| Scope | Any size | < 300 lines typically |
+| Prerequisites | None | Existing integrated spec required |
+| User checkpoints | Multiple (spec, plan, phases) | Two (start, end) |
+| Multi-agent consultation | Throughout | End only (review) |
 
 ## Protocol Selection Guide
 
-**Choose TICK when**:
-- Task is well-defined
-- < 300 lines of code
-- Low risk of errors
-- Fast iteration needed
-- Requirements are clear
+```
+Is there an existing spec to amend?
+├── NO → Use SPIDER (create new spec)
+└── YES → Is it integrated?
+    ├── NO → Complete SPIDER cycle first
+    └── YES → Is the change small (<300 LOC)?
+        ├── YES → Use TICK (amend existing spec)
+        └── NO → Use SPIDER (scope too large)
+```
 
-**Choose SPIDER when**:
-- Requirements unclear
-- > 300 lines of code
-- High complexity
-- Stakeholder alignment needed
-- Architecture changes
+**Mental Model**:
+- SPIDER = Create new feature from scratch
+- TICK = Refine/extend existing feature
 
 ## Example TICK Workflow
 
-**User**: "Add a health check endpoint to the API"
+**User**: "Add password reset to the user authentication system"
 
 **Agent**:
-1. Generates spec (30 seconds)
-   - `specs/0002-api-health-check.md`
-   - Commit: "TICK Spec: API health check"
-2. Generates plan (30 seconds)
-   - `plans/0002-api-health-check.md`
-   - Commit: "TICK Plan: API health check"
-3. Implements (2 minutes)
-   - Creates `/api/health` endpoint
-   - Tests endpoint
-   - Commit: "TICK Impl: API health check"
-4. Reviews and presents (1 minute)
-   - `reviews/0002-api-health-check.md`
-   - Commit: "TICK Review: API health check"
-   - Shows user the working endpoint
+1. **Identify**: Finds `specs/0002-user-authentication.md` (integrated)
+2. **Amend Spec** (30 seconds):
+   - Updates Success Criteria with password reset requirements
+   - Adds TICK-001 entry to Amendments section
+   - Commit: `[TICK 0002-001] Spec: Add password reset feature`
+3. **Amend Plan** (30 seconds):
+   - Adds Phase 4: Password Reset Email Service
+   - Adds TICK-001 entry to Amendment History
+   - Commit: `[TICK 0002-001] Plan: Add password reset implementation`
+4. **Implement** (2 minutes):
+   - Creates password reset endpoint
+   - Implements email service
+   - Tests functionality
+   - Commit: `[TICK 0002-001] Impl: Add password reset feature`
+5. **Review** (1 minute):
+   - Creates `reviews/0002-user-authentication-tick-001.md`
+   - Runs 3-way consultation (Gemini, Codex, Claude)
+   - Commit: `[TICK 0002-001] Review: Password reset implementation`
+   - Shows user the completed work
 
-**User**: Reviews, approves or requests changes
+**Total Time**: ~4 minutes for simple amendment
 
-**Total Time**: ~4 minutes for simple task
+## Multiple TICKs per Spec
+
+A single spec can have multiple TICK amendments over its lifetime:
+
+```markdown
+## Amendments
+
+### TICK-003: Add MFA support (2025-03-15)
+...
+
+### TICK-002: Add session timeout (2025-02-01)
+...
+
+### TICK-001: Add password reset (2025-01-15)
+...
+```
+
+TICKs are listed in reverse chronological order (newest first). Each TICK builds on the previous state of the spec.
+
+## Migration from Standalone TICK
+
+Existing standalone TICK projects (created before this protocol change) are grandfathered in. No migration required.
+
+**Optional Migration** (if desired):
+1. Identify the "parent spec" the TICK logically extends
+2. Move TICK content into an amendment entry in the parent spec
+3. Archive the standalone files with a note: "Migrated to spec #### as TICK-NNN"
+4. Update projectlist.md to reflect the change
 
 ## Benefits
 
-1. **Speed**: No intermediate approvals means faster delivery
-2. **Simplicity**: Straightforward workflow, easy to understand
-3. **Autonomy**: Agent executes without constant human intervention
-4. **Documentation**: Still maintains spec, plan, review for reference
-5. **Lightweight**: Minimal overhead for simple tasks
+1. **Single source of truth**: Spec file shows complete feature evolution
+2. **Clear history**: Amendments section documents all changes chronologically
+3. **Reduced fragmentation**: Related work stays together
+4. **Simpler mental model**: "New vs amendment" is clearer than "SPIDER vs TICK"
+5. **Preserved context**: Looking at a spec shows all refinements
 
 ## Limitations
 
-1. **No course correction**: Can't adjust mid-implementation
-2. **No multi-perspective**: Single agent viewpoint only
-3. **Risk**: May implement wrong solution if spec unclear
-4. **Scope creep**: Easy to go beyond intended scope
-5. **No validation**: No intermediate checks until end
+1. **Requires existing spec**: Cannot use TICK for greenfield work
+2. **Spec can grow large**: Many TICKs add content (consider: >5 TICKs suggests need for new spec)
+3. **Merge conflicts**: Multiple TICKs on same spec may conflict
+4. **No course correction**: Can't adjust mid-implementation
 
 ## Best Practices
 
-1. **Clear Task Description**: User provides detailed initial description
-2. **Test Before Review**: Agent must test functionality before presenting
-3. **Honest Review**: Document all issues and deviations in review
-4. **Quick Iterations**: If changes needed, make them fast
-5. **Know When to Switch**: If task becomes complex, switch to SPIDER
+1. **Verify spec is integrated**: Never TICK a spec that isn't complete
+2. **Keep TICKs small**: If scope grows, consider new SPIDER spec
+3. **Clear summaries**: Amendment entries should be self-explanatory
+4. **Test before review**: Always test functionality before presenting
+5. **Honest documentation**: Document all deviations in review
 
-## Template Usage
+## Templates
 
-All templates are located in `codev/protocols/tick/templates/`:
-- `spec.md` - Specification template
-- `plan.md` - Plan template
-- `review.md` - Review template
-
-These are simplified versions of SPIDER templates without consultation sections.
+TICK uses the standard SPIDER templates with amendments sections:
+- Spec template: `codev/protocols/spider/templates/spec.md` (includes Amendments section)
+- Plan template: `codev/protocols/spider/templates/plan.md` (includes Amendment History section)
+- Review template: `codev/protocols/tick/templates/review.md` (TICK-specific)

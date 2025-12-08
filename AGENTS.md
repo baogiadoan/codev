@@ -44,7 +44,7 @@ You are working in the Codev project itself, with multiple development protocols
 **Available Protocols**:
 - **SPIDER**: Multi-phase development with consultation - `codev/protocols/spider/protocol.md`
 - **SPIDER-SOLO**: Single-agent variant - `codev/protocols/spider-solo/protocol.md`
-- **TICK**: Fast autonomous implementation - `codev/protocols/tick/protocol.md`
+- **TICK**: Amendment workflow for existing specs - `codev/protocols/tick/protocol.md`
 - **EXPERIMENT**: Disciplined experimentation - `codev/protocols/experiment/protocol.md`
 - **MAINTAIN**: Codebase maintenance (code hygiene + documentation sync) - `codev/protocols/maintain/protocol.md`
 
@@ -73,18 +73,22 @@ AI agents must stop at `spec-draft` after writing a spec, and stop at `committed
 
 ## Protocol Selection Guide
 
-### Use TICK for:
-- Small features (< 300 lines of code)
-- Well-defined tasks with clear requirements
-- Bug fixes with known solutions
-- Simple configuration changes
-- Utility function additions
-- Tasks needing fast iteration
+### Use TICK for (amendments to existing specs):
+- **Amendments** to an existing SPIDER spec that is already `integrated`
+- Small scope (< 300 lines of new/changed code)
+- Clear requirements that extend existing functionality
+- Examples:
+  - Adding a feature to an existing system (e.g., "add password reset to user auth")
+  - Bug fixes that extend existing functionality
+  - Configuration changes with logic
+  - Utility function additions to existing modules
 
-### Use SPIDER for:
+**TICK modifies spec/plan in-place** and creates a new review file. Cannot be used for greenfield work.
+
+### Use SPIDER for (new features):
+- Creating a **new feature from scratch** (no existing spec to amend)
 - New protocols or protocol variants
 - Major changes to existing protocols
-- New example projects
 - Significant changes to installation process
 - Complex features requiring multiple phases
 - Architecture changes
@@ -483,6 +487,36 @@ wait
 | Claude | ~60-120s | Balanced analysis with targeted tool use |
 
 **Why Codex is slower**: Codex CLI's `--full-auto` mode executes shell commands sequentially with reasoning between each step. For PR reviews, it typically runs 10-15 commands like `git show <branch>:<file>`, `rg -n "pattern"`, etc. This is more thorough but takes ~2x longer than Gemini's text-only analysis.
+
+### Architect-Mediated PR Reviews
+
+For faster and more consistent PR reviews, the Architect can prepare context upfront and pass it to consultants:
+
+```bash
+# Standard mode (consultant explores filesystem - slower)
+consult --model gemini pr 68
+
+# Mediated mode (architect provides context - faster)
+consult --model gemini pr 68 --context overview.md
+
+# Via stdin
+cat overview.md | consult --model gemini pr 68 --context -
+
+# 3-way parallel mediated reviews
+consult --model gemini pr 68 --context overview.md &
+consult --model codex pr 68 --context overview.md &
+consult --model claude pr 68 --context overview.md &
+wait
+```
+
+**When to use mediated mode**:
+- 3-way reviews where consistent context is important
+- Large PRs where exploration is slow
+- When specific aspects need focused review
+
+**Template**: Use `codev/templates/pr-overview.md` to prepare context.
+
+**Performance**: Mediated reviews complete in ~30-60s vs 120-250s with exploration.
 
 ### How It Works
 

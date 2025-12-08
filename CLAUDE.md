@@ -44,7 +44,7 @@ You are working in the Codev project itself, with multiple development protocols
 **Available Protocols**:
 - **SPIDER**: Multi-phase development with consultation - `codev/protocols/spider/protocol.md`
 - **SPIDER-SOLO**: Single-agent variant - `codev/protocols/spider-solo/protocol.md`
-- **TICK**: Fast autonomous implementation - `codev/protocols/tick/protocol.md`
+- **TICK**: Amendment workflow for existing specs - `codev/protocols/tick/protocol.md`
 - **EXPERIMENT**: Disciplined experimentation - `codev/protocols/experiment/protocol.md`
 - **MAINTAIN**: Codebase maintenance (code hygiene + documentation sync) - `codev/protocols/maintain/protocol.md`
 
@@ -73,18 +73,22 @@ AI agents must stop at `spec-draft` after writing a spec, and stop at `committed
 
 ## Protocol Selection Guide
 
-### Use TICK for:
-- Small features (< 300 lines of code)
-- Well-defined tasks with clear requirements
-- Bug fixes with known solutions
-- Simple configuration changes
-- Utility function additions
-- Tasks needing fast iteration
+### Use TICK for (amendments to existing specs):
+- **Amendments** to an existing SPIDER spec that is already `integrated`
+- Small scope (< 300 lines of new/changed code)
+- Clear requirements that extend existing functionality
+- Examples:
+  - Adding a feature to an existing system (e.g., "add password reset to user auth")
+  - Bug fixes that extend existing functionality
+  - Configuration changes with logic
+  - Utility function additions to existing modules
 
-### Use SPIDER for:
+**TICK modifies spec/plan in-place** and creates a new review file. Cannot be used for greenfield work.
+
+### Use SPIDER for (new features):
+- Creating a **new feature from scratch** (no existing spec to amend)
 - New protocols or protocol variants
 - Major changes to existing protocols
-- New example projects
 - Significant changes to installation process
 - Complex features requiring multiple phases
 - Architecture changes
