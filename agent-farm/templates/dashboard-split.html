@@ -722,11 +722,11 @@
   </div>
 
   <!-- Context menu -->
-  <div class="context-menu hidden" id="context-menu">
-    <div class="context-menu-item" onclick="openContextTab()">Open in New Tab</div>
-    <div class="context-menu-item" onclick="closeActiveTab()">Close</div>
-    <div class="context-menu-item" onclick="closeOtherTabs()">Close Others</div>
-    <div class="context-menu-item danger" onclick="closeAllTabs()">Close All</div>
+  <div class="context-menu hidden" id="context-menu" role="menu">
+    <div class="context-menu-item" role="menuitem" tabindex="0" onclick="openContextTab()" onkeydown="handleContextMenuKeydown(event, openContextTab)">Open in New Tab</div>
+    <div class="context-menu-item" role="menuitem" tabindex="-1" onclick="closeActiveTab()" onkeydown="handleContextMenuKeydown(event, closeActiveTab)">Close</div>
+    <div class="context-menu-item" role="menuitem" tabindex="-1" onclick="closeOtherTabs()" onkeydown="handleContextMenuKeydown(event, closeOtherTabs)">Close Others</div>
+    <div class="context-menu-item danger" role="menuitem" tabindex="-1" onclick="closeAllTabs()" onkeydown="handleContextMenuKeydown(event, closeAllTabs)">Close All</div>
   </div>
 
   <!-- Toast container -->
@@ -958,7 +958,7 @@
         const isActive = tab.id === activeTabId;
         const icon = getTabIcon(tab.type);
         const statusDot = tab.type === 'builder' ? getStatusDot(tab.status) : '';
-        const tooltip = getTabTooltip(tab).replace(/"/g, '&quot;');
+        const tooltip = getTabTooltip(tab);
 
         return `
           <div class="tab ${isActive ? 'active' : ''}"
@@ -1021,6 +1021,16 @@
       return `<span class="${classes.join(' ')}" style="background: ${config.color}" title="${config.label}" role="img" aria-label="${config.label}"></span>`;
     }
 
+    // Escape HTML special characters to prevent XSS
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     // Generate tooltip text for tab hover
     function getTabTooltip(tab) {
       const lines = [tab.name];
@@ -1038,7 +1048,7 @@
         if (tab.port) lines.push(`Port: ${tab.port}`);
       }
 
-      return lines.join('\n');
+      return escapeHtml(lines.join('\n'));
     }
 
     // Track current tab content to avoid re-rendering iframe unnecessarily
@@ -1187,8 +1197,10 @@
             <span class="name">${tab.name}</span>
             <span class="open-external"
                   onclick="event.stopPropagation(); openInNewTabFromMenu('${tab.id}')"
+                  onkeydown="if(event.key==='Enter'||event.key===' '){event.stopPropagation();openInNewTabFromMenu('${tab.id}')}"
                   title="Open in new tab"
                   role="button"
+                  tabindex="0"
                   aria-label="Open ${tab.name} in new tab">↗</span>
           </div>
         `;
@@ -1353,6 +1365,10 @@
       menu.style.top = event.clientY + 'px';
       menu.classList.remove('hidden');
 
+      // Focus first item for keyboard navigation
+      const firstItem = menu.querySelector('.context-menu-item');
+      if (firstItem) firstItem.focus();
+
       // Close on click outside
       setTimeout(() => {
         document.addEventListener('click', hideContextMenu, { once: true });
@@ -1362,6 +1378,38 @@
     function hideContextMenu() {
       document.getElementById('context-menu').classList.add('hidden');
       contextMenuTabId = null;
+    }
+
+    // Handle keyboard navigation in context menu
+    function handleContextMenuKeydown(event, action) {
+      const menu = document.getElementById('context-menu');
+      const items = Array.from(menu.querySelectorAll('.context-menu-item'));
+      const currentIndex = items.findIndex(item => item === document.activeElement);
+
+      switch (event.key) {
+        case 'ArrowDown':
+          event.preventDefault();
+          const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+          items[nextIndex].focus();
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+          items[prevIndex].focus();
+          break;
+        case 'Enter':
+        case ' ':
+          event.preventDefault();
+          action();
+          break;
+        case 'Escape':
+          event.preventDefault();
+          hideContextMenu();
+          break;
+        case 'Tab':
+          hideContextMenu();
+          break;
+      }
     }
 
     function closeActiveTab() {
