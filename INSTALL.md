@@ -431,8 +431,8 @@ Override via CLI:
 # Open a utility shell
 ./codev/bin/agent-farm util
 
-# Annotate a file for review
-./codev/bin/agent-farm annotate src/auth/login.ts
+# Open a file in annotation viewer
+./codev/bin/agent-farm open src/auth/login.ts
 
 # Clean up a builder (checks for uncommitted changes first)
 ./codev/bin/agent-farm cleanup --project 0003

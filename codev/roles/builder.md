@@ -4,11 +4,11 @@ A Builder is a focused implementation agent that works on a single spec in an is
 
 ## Output Formatting
 
-When referencing files, use standard file paths or open them directly with `af annotate`:
+When referencing files, use standard file paths or open them directly with `af open`:
 
 ```bash
 # Open a file for review in the dashboard
-af annotate src/lib/auth.ts
+af open src/lib/auth.ts
 
 # Check your status
 af status

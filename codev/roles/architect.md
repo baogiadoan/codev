@@ -14,7 +14,7 @@ The `af` command orchestrates builders, manages worktrees, and coordinates devel
 - `af send` - Send short messages to builders
 - `af cleanup` - Remove completed builders
 - `af status` - Check builder status
-- `af annotate <file>` - Open file for human review
+- `af open <file>` - Open file for human review
 
 **Full reference:** See [codev/resources/agent-farm.md](../resources/agent-farm.md)
 
@@ -157,7 +157,7 @@ The Architect uses SPIDER or TICK protocols. The Architect is responsible for th
 5. Address concerns raised by the reviewers
 6. **Present to human** for final review:
    ```bash
-   af annotate codev/specs/0034-feature-name.md
+   af open codev/specs/0034-feature-name.md
    ```
 
 ### Phase 2: Plan (Architect)
@@ -173,7 +173,7 @@ The Architect uses SPIDER or TICK protocols. The Architect is responsible for th
 5. Address concerns raised by the reviewers
 6. **Present to human** for final review:
    ```bash
-   af annotate codev/plans/0034-feature-name.md
+   af open codev/plans/0034-feature-name.md
    ```
 
 ### Phases 3-6: IDER (Builder)

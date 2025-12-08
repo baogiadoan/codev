@@ -172,7 +172,7 @@ af cleanup -p 0003 --force    # Force cleanup (lose uncommitted work)
 
 # Utilities
 af util                       # Open a utility shell terminal
-af annotate src/file.ts       # Open file annotation viewer
+af open src/file.ts           # Open file annotation viewer
 
 # Port management (for multi-project support)
 af ports list                 # List port allocations
