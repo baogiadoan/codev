@@ -266,8 +266,8 @@ The Architect-Builder pattern enables parallel AI-assisted development by separa
 # Open a utility shell
 ./codev/bin/agent-farm util
 
-# Annotate files with review comments
-./codev/bin/agent-farm annotate src/auth/login.ts
+# Open files in annotation viewer
+./codev/bin/agent-farm open src/auth/login.ts
 
 # Clean up a builder (checks for uncommitted work first)
 ./codev/bin/agent-farm cleanup --project 0003

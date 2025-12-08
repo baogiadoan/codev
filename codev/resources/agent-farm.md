@@ -97,7 +97,7 @@ af cleanup -p 0003 --force      # Force cleanup (lose uncommitted work)
 
 ```bash
 af util                         # Open a utility shell terminal
-af annotate src/file.ts         # Open file annotation viewer
+af open src/file.ts             # Open file annotation viewer
 af rename 0013 "auth-builder"   # Rename a builder or utility
 ```
 

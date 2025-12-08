@@ -1,5 +1,5 @@
 /**
- * Annotate command - opens file annotation viewer
+ * Open command - opens file annotation viewer
  *
  * When the dashboard is running, this creates a tab in the dashboard.
  * When the dashboard is not running, it opens the annotation viewer directly.
@@ -13,7 +13,7 @@ import { logger, fatal } from '../utils/logger.js';
 import { spawnDetached, findAvailablePort, openBrowser } from '../utils/shell.js';
 import { addAnnotation, loadState } from '../state.js';
 
-interface AnnotateOptions {
+interface OpenOptions {
   file: string;
 }
 
@@ -60,7 +60,7 @@ async function tryDashboardApi(filePath: string): Promise<boolean> {
 /**
  * Open file annotation viewer
  */
-export async function annotate(options: AnnotateOptions): Promise<void> {
+export async function open(options: OpenOptions): Promise<void> {
   const config = getConfig();
 
   // Resolve file path relative to current directory (works correctly in worktrees)

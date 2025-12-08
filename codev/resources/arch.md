@@ -102,7 +102,7 @@ codev/                                  # Project root (git repository)
 │   │   │   ├── status.ts               # Show status
 │   │   │   ├── cleanup.ts              # Clean up builder
 │   │   │   ├── util.ts                 # Utility shell
-│   │   │   └── annotate.ts             # File annotation
+│   │   │   └── open.ts                 # File annotation viewer
 │   │   ├── utils/                      # Utilities
 │   │   │   ├── config.ts               # Configuration management
 │   │   │   ├── port-registry.ts        # Global port allocation
@@ -387,7 +387,7 @@ af cleanup -p 0003 --force    # Force cleanup (lose uncommitted work)
 # Utilities
 af util                       # Open a utility shell terminal
 af shell                      # Alias for util
-af annotate src/file.ts       # Open file annotation viewer
+af open src/file.ts           # Open file annotation viewer
 
 # Port management (multi-project support)
 af ports list                 # List port allocations
@@ -1342,7 +1342,7 @@ The architect-builder system was consolidated to eliminate brittleness from trip
 #### Agent-Farm TypeScript CLI
 - **Single canonical implementation** in `agent-farm/src/`
 - **Thin bash wrappers** at `codev/bin/agent-farm` and `codev-skeleton/bin/agent-farm`
-- **CLI commands**: start, stop, status, spawn, util, annotate, cleanup, ports
+- **CLI commands**: start, stop, status, spawn, util, open, cleanup, ports
 - **Alias recommended**: `alias af='./codev/bin/agent-farm'`
 
 #### Global Port Registry

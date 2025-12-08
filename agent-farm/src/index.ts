@@ -154,14 +154,14 @@ program
     }
   });
 
-// Annotate command (placeholder)
+// Open command - opens file annotation viewer
 program
-  .command('annotate <file>')
+  .command('open <file>')
   .description('Open file annotation viewer')
   .action(async (file) => {
-    const { annotate } = await import('./commands/annotate.js');
+    const { open } = await import('./commands/open.js');
     try {
-      await annotate({ file });
+      await open({ file });
     } catch (error) {
       logger.error(error instanceof Error ? error.message : String(error));
       process.exit(1);

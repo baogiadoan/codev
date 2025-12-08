@@ -55,7 +55,7 @@ af spawn --task "Fix the login validation"`);
     prompts.step(2, 'af spawn -p X  - Spawn a builder for spec X');
     prompts.step(3, 'af status      - Check status of all agents');
     prompts.step(4, 'af send X      - Send instructions to a builder');
-    prompts.step(5, 'af annotate F  - Open file F in annotation viewer');
+    prompts.step(5, 'af open F      - Open file F in annotation viewer');
     prompts.step(6, 'af stop        - Stop all agent farm processes');
     console.log();
 

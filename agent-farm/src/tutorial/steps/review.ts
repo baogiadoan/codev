@@ -25,7 +25,7 @@ export const reviewStep: Step = {
     prompts.content('The Annotation Viewer\n');
     prompts.content('Agent Farm includes an annotation viewer for reviewing code:\n');
     prompts.code(`# Open a file for annotation
-af annotate src/path/to/file.ts
+af open src/path/to/file.ts
 
 # This opens a web viewer where you can:
 # - See the code with syntax highlighting
@@ -60,7 +60,7 @@ af annotate src/path/to/file.ts
 af start              # Start architect dashboard
 af spawn -p 0001      # Spawn builder for spec
 af status             # Check agent status
-af annotate <file>    # Open annotation viewer
+af open <file>        # Open annotation viewer
 af tutorial --status  # Check tutorial progress
 af tutorial --reset   # Reset tutorial
 
