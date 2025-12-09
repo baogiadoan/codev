@@ -19,7 +19,9 @@ interface ModelConfig {
 
 const MODEL_CONFIGS: Record<string, ModelConfig> = {
   gemini: { cli: 'gemini', args: ['--yolo'], envVar: 'GEMINI_SYSTEM_MD' },
-  codex: { cli: 'codex', args: ['exec', '--full-auto'], envVar: 'CODEX_SYSTEM_MESSAGE' },
+  // Codex uses experimental_instructions_file config flag (not env var)
+  // See: https://github.com/openai/codex/discussions/3896
+  codex: { cli: 'codex', args: ['exec', '--full-auto'], envVar: null },
   claude: { cli: 'claude', args: ['--print', '-p'], envVar: null },
 };
 
@@ -205,9 +207,18 @@ async function runConsultation(
 
     cmd = [config.cli, ...config.args, query];
   } else if (model === 'codex') {
-    // Codex uses CODEX_SYSTEM_MESSAGE env var
-    env['CODEX_SYSTEM_MESSAGE'] = role;
-    cmd = [config.cli, ...config.args, query];
+    // Codex uses experimental_instructions_file config flag (not env var)
+    // This is the official approach per https://github.com/openai/codex/discussions/3896
+    tempFile = path.join(tmpdir(), `codev-role-${Date.now()}.md`);
+    fs.writeFileSync(tempFile, role);
+    cmd = [
+      config.cli,
+      'exec',
+      '-c', `experimental_instructions_file=${tempFile}`,
+      '-c', 'model_reasoning_effort=low', // Faster responses (10-20% improvement)
+      '--full-auto',
+      query,
+    ];
   } else if (model === 'claude') {
     // Claude gets role prepended to query
     const fullQuery = `${role}\n\n---\n\nConsultation Request:\n${query}`;
