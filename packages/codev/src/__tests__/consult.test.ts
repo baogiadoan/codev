@@ -251,18 +251,24 @@ describe('consult command', () => {
   });
 
   describe('role loading', () => {
-    it('should throw error when consultant role not found', async () => {
+    it('should fall back to embedded skeleton when local role not found', async () => {
+      // With embedded skeleton, role is always found (falls back to skeleton/roles/consultant.md)
+      // This test verifies that consult doesn't throw when no local codev directory exists
       fs.mkdirSync(testBaseDir, { recursive: true });
-      // No codev/roles/consultant.md
+      // No local codev/roles/consultant.md - should use embedded skeleton
 
       process.chdir(testBaseDir);
 
       vi.resetModules();
-      const { consult } = await import('../commands/consult/index.js');
+      // The consult function should not throw because it falls back to embedded skeleton
+      // We can't actually run the full consult without mocking the CLI, but we can test
+      // the skeleton resolver directly
+      const { resolveCodevFile } = await import('../lib/skeleton.js');
+      const rolePath = resolveCodevFile('roles/consultant.md', testBaseDir);
 
-      await expect(
-        consult({ model: 'gemini', subcommand: 'general', args: ['test'] })
-      ).rejects.toThrow(/Role file not found/);
+      // Should find the embedded skeleton version (not null)
+      expect(rolePath).not.toBeNull();
+      expect(rolePath).toContain('skeleton');
     });
   });
 
