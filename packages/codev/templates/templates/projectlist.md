@@ -7,14 +7,13 @@ Centralized tracking of all projects with status, priority, and dependencies.
 Every project goes through stages. Not all projects reach completion:
 
 **Active Lifecycle:**
-1. **conceived** - Initial idea captured, ready for specification
-2. **spec-draft** - Specification written by AI (codev/specs/NNNN-name.md exists), awaiting human review
-3. **specified** - Specification approved by human. **ONLY the human can mark a project as specified** - AI agents must stop at spec-draft.
-4. **planned** - Implementation plan created (codev/plans/NNNN-name.md exists)
-5. **implementing** - Actively being worked on (one or more phases in progress)
-6. **implemented** - Code complete, all phases done, tests passing locally
-7. **committed** - Merged to develop branch, ready for production deployment
-8. **integrated** - Merged to main, deployed to production, validated, reviewed (codev/reviews/NNNN-name.md exists), and **explicitly approved by project owner**. **ONLY the human can mark a project as integrated** - AI agents must never transition to this status on their own.
+1. **conceived** - Initial idea captured. Spec file may exist but is not yet approved. **AI agents must stop here after writing a spec.**
+2. **specified** - Specification approved by human. **ONLY the human can mark a project as specified.**
+3. **planned** - Implementation plan created (codev/plans/NNNN-name.md exists)
+4. **implementing** - Actively being worked on (one or more phases in progress)
+5. **implemented** - Code complete, tests passing, PR created and awaiting review
+6. **committed** - PR merged to main branch
+7. **integrated** - Merged to main, deployed to production, validated, reviewed (codev/reviews/NNNN-name.md exists), and **explicitly approved by project owner**. **ONLY the human can mark a project as integrated** - AI agents must never transition to this status on their own.
 
 **Terminal States:**
 - **abandoned** - Project canceled/rejected, will not be implemented (explain reason in notes)
@@ -27,7 +26,7 @@ projects:
   - id: "NNNN"              # Four-digit project number
     title: "Brief title"
     summary: "One-sentence description of what this project does"
-    status: conceived|spec-draft|specified|planned|implementing|implemented|committed|integrated|abandoned|on-hold
+    status: conceived|specified|planned|implementing|implemented|committed|integrated|abandoned|on-hold
     priority: high|medium|low
     files:
       spec: codev/specs/NNNN-name.md       # Required after "specified"
@@ -57,16 +56,16 @@ Add a project entry when:
 ### Status Transitions
 
 ```
-conceived → spec-draft → [HUMAN] → specified → planned → implementing → implemented → committed → [HUMAN] → integrated
-                            ↑                                                                        ↑
-                      Human approves                                                          Human approves
-                         the spec                                                            production deploy
+conceived → [HUMAN] → specified → planned → implementing → implemented → committed → [HUMAN] → integrated
+     ↑                                                                                   ↑
+Human approves                                                                    Human approves
+   the spec                                                                      production deploy
 
 Any status can transition to: abandoned, on-hold
 ```
 
 **Human approval gates:**
-- `spec-draft` → `specified`: Human must approve the specification
+- `conceived` → `specified`: Human must approve the specification
 - `committed` → `integrated`: Human must validate production deployment
 
 ### Priority Guidelines

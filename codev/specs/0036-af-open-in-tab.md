@@ -1,6 +1,6 @@
 # Spec 0036: Tab Bar Actions & Tooltips
 
-**Status:** spec-draft
+**Status:** conceived
 **Protocol:** TICK
 **Priority:** Low
 **Dependencies:** 0007 (Split-Pane Dashboard)

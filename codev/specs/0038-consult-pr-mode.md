@@ -3,7 +3,7 @@
 ## Metadata
 - **ID**: 0038-consult-pr-mode
 - **Protocol**: TICK
-- **Status**: spec-draft
+- **Status**: conceived
 - **Created**: 2025-12-07
 - **Priority**: medium
 

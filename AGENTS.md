@@ -66,10 +66,10 @@ When asked about project status, incomplete work, or what to work on next:
 4. Reserve project numbers there BEFORE creating spec files
 
 **🚨 CRITICAL: Two human approval gates exist:**
-- **spec-draft → specified**: AI creates spec, but ONLY the human can approve it
+- **conceived → specified**: AI creates spec, but ONLY the human can approve it
 - **committed → integrated**: AI can merge PRs, but ONLY the human can validate production
 
-AI agents must stop at `spec-draft` after writing a spec, and stop at `committed` after merging.
+AI agents must stop at `conceived` after writing a spec, and stop at `committed` after merging.
 
 ## Protocol Selection Guide
 
