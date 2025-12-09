@@ -2,6 +2,8 @@
 
 Centralized tracking of all projects with status, priority, and dependencies.
 
+> **Quick Reference**: See `codev/resources/workflow-reference.md` for stage diagrams and common commands.
+
 ## Document Organization
 
 **Active projects appear first, integrated projects appear last (grouped by release).**
@@ -842,6 +844,6 @@ To see high-priority work, search for `priority: high`.
 Before starting a project, verify its dependencies are at least `implemented`.
 
 ### Protocol Selection
-- **SPIDER/SPIDER-SOLO**: Most projects (formal spec → plan → implement → review)
-- **TICK**: Small, well-defined tasks (< 300 lines)
+- **SPIDER**: Most projects (formal spec → plan → implement → review)
+- **TICK**: Small, well-defined tasks (< 300 lines) or amendments to existing specs
 - **EXPERIMENT**: Research/prototyping before committing to a project

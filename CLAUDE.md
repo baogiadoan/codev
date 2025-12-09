@@ -43,7 +43,6 @@ You are working in the Codev project itself, with multiple development protocols
 
 **Available Protocols**:
 - **SPIDER**: Multi-phase development with consultation - `codev/protocols/spider/protocol.md`
-- **SPIDER-SOLO**: Single-agent variant - `codev/protocols/spider-solo/protocol.md`
 - **TICK**: Amendment workflow for existing specs - `codev/protocols/tick/protocol.md`
 - **EXPERIMENT**: Disciplined experimentation - `codev/protocols/experiment/protocol.md`
 - **MAINTAIN**: Codebase maintenance (code hygiene + documentation sync) - `codev/protocols/maintain/protocol.md`
@@ -131,7 +130,6 @@ project-root/
 ├── codev/
 │   ├── protocols/           # Development protocols
 │   │   ├── spider/         # Multi-phase development with consultation
-│   │   ├── spider-solo/    # Single-agent SPIDER variant
 │   │   ├── tick/           # Fast autonomous implementation
 │   │   ├── experiment/     # Disciplined experimentation
 │   │   └── maintain/       # Codebase maintenance (code + docs)
@@ -160,7 +158,7 @@ Use sequential numbering with descriptive names:
 - Plan: `codev/plans/0001-feature-name.md`
 - Review: `codev/reviews/0001-feature-name.md`
 
-**Note**: Sequential numbering is shared across all protocols (SPIDER, SPIDER-SOLO, TICK)
+**Note**: Sequential numbering is shared across all protocols (SPIDER, TICK)
 
 ## Multi-Agent Consultation
 
@@ -446,7 +444,25 @@ consult --model opus plan 39   # alias for claude
 
 # Dry run (print command without executing)
 consult --model gemini spec 39 --dry-run
+
+# Review type (use stage-specific review prompt)
+consult --model gemini spec 39 --type spec-review
+consult --model gemini pr 68 --type integration-review
 ```
+
+### Review Types
+
+Use the `--type` parameter to load stage-specific review prompts:
+
+| Type | Stage | Use Case |
+|------|-------|----------|
+| `spec-review` | conceived | Review specification for completeness and clarity |
+| `plan-review` | specified | Review implementation plan for coverage and feasibility |
+| `impl-review` | implementing | Review implementation for spec adherence and quality |
+| `pr-ready` | implemented | Final self-check before creating PR |
+| `integration-review` | committed | Architect's review for architectural fit |
+
+Review type prompts are in `codev/roles/review-types/`. The prompt is appended to the consultant role.
 
 ### Parallel Consultation (3-Way Reviews)
 
