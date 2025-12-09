@@ -379,34 +379,6 @@ Projects currently in development (conceived through committed), sorted by prior
     tags: [architecture, portability]
     notes: "SPIDER protocol. HIGH COMPLEXITY WARNING: May be premature (YAGNI). One-way transpilation. Consulted GPT-5 and Gemini Pro."
 
-  - id: "0025"
-    title: "Docker Container"
-    summary: "Provide Docker image with all codev dependencies pre-installed for easy onboarding"
-    status: conceived
-    priority: low
-    release: null
-    files:
-      spec: null
-      plan: null
-      review: null
-    dependencies: ["0013"]
-    tags: [infrastructure, onboarding]
-    notes: "Depends on 0013 to define what goes in the container. Consider multi-stage build for size."
-
-  - id: "0026"
-    title: "Annotation Viewer Improvements"
-    summary: "UX improvements to annotation viewer: wider text boxes, triple-return to save"
-    status: conceived
-    priority: low
-    release: null
-    files:
-      spec: null
-      plan: null
-      review: null
-    dependencies: ["0007"]
-    tags: [ui, dashboard]
-    notes: "Wider annotation boxes for readability. Triple-return (Enter x3) as save shortcut."
-
   - id: "0029"
     title: "Overview Dashboard"
     summary: "Centralized dashboard showing all running agent-farm instances with launch capability"
@@ -737,6 +709,34 @@ Projects that are paused or canceled.
     dependencies: []
     tags: [roles, documentation, architecture]
     notes: "After consulting Gemini/Codex, decided against new roles. Documentation maintenance absorbed into MAINTAIN protocol (spec 0035)."
+
+  - id: "0025"
+    title: "Docker Container"
+    summary: "Provide Docker image with all codev dependencies pre-installed for easy onboarding"
+    status: abandoned
+    priority: low
+    release: null
+    files:
+      spec: null
+      plan: null
+      review: null
+    dependencies: []
+    tags: [infrastructure, onboarding]
+    notes: "Abandoned 2025-12-08. Low value - npm install is simple enough."
+
+  - id: "0026"
+    title: "Annotation Viewer Improvements"
+    summary: "UX improvements to annotation viewer: wider text boxes, triple-return to save"
+    status: abandoned
+    priority: low
+    release: null
+    files:
+      spec: null
+      plan: null
+      review: null
+    dependencies: []
+    tags: [ui, dashboard]
+    notes: "Abandoned 2025-12-08. Current UX is sufficient."
 ```
 
 ---
