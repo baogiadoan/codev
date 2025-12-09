@@ -36,13 +36,11 @@ const displayPath = path.basename(filePath);
 function findTemplatePath(): string {
   const filename = 'open.html';
 
-  // 1. Try relative to compiled output (dist/servers/ -> templates/)
-  const pkgPath = path.resolve(__dirname, '../templates/', filename);
+  // Templates are at package root: packages/codev/templates/
+  // From compiled: dist/agent-farm/servers/ -> ../../../templates/
+  // From source: src/agent-farm/servers/ -> ../../../templates/
+  const pkgPath = path.resolve(__dirname, '../../../templates/', filename);
   if (fs.existsSync(pkgPath)) return pkgPath;
-
-  // 2. Try relative to source (src/servers/ -> templates/)
-  const devPath = path.resolve(__dirname, '../../templates/', filename);
-  if (fs.existsSync(devPath)) return devPath;
 
   throw new Error(`Template not found: ${filename}`);
 }

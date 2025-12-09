@@ -352,16 +352,12 @@ async function stopInstance(basePort: number): Promise<{ success: boolean; error
  * Template is bundled with agent-farm package in templates/ directory
  */
 function findTemplatePath(): string | null {
-  // 1. Try relative to compiled output (dist/servers/ -> templates/)
-  const pkgPath = path.resolve(__dirname, '../templates/tower.html');
+  // Templates are at package root: packages/codev/templates/
+  // From compiled: dist/agent-farm/servers/ -> ../../../templates/
+  // From source: src/agent-farm/servers/ -> ../../../templates/
+  const pkgPath = path.resolve(__dirname, '../../../templates/tower.html');
   if (fs.existsSync(pkgPath)) {
     return pkgPath;
-  }
-
-  // 2. Try relative to source (src/servers/ -> templates/)
-  const devPath = path.resolve(__dirname, '../../templates/tower.html');
-  if (fs.existsSync(devPath)) {
-    return devPath;
   }
 
   return null;
