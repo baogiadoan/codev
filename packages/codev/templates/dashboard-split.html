@@ -842,47 +842,27 @@
       color: var(--text-muted);
     }
 
-    /* Stage indicators */
-    .stage-indicator {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
+    /* Stage cell styling */
+    .stage-cell {
+      font-size: 11px;
     }
 
-    .stage-indicator--current {
+    .stage-cell--complete {
+      background: rgba(34, 197, 94, 0.3);
+    }
+
+    .stage-cell--current {
+      background: rgba(249, 115, 22, 0.3);
+    }
+
+    .stage-cell a {
       color: var(--text-primary);
+      text-decoration: none;
     }
 
-    .stage-indicator--completed {
-      color: var(--text-muted);
+    .stage-cell a:hover {
+      text-decoration: underline;
     }
-
-    .stage-indicator--empty {
-      color: transparent;
-    }
-
-    /* Human-gated stage indicator */
-    .human-gate {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-left: 2px;
-    }
-
-    /* Row color tints */
-    .kanban-grid tr.status-conceived { background: rgba(234, 179, 8, 0.05); }
-    .kanban-grid tr.status-specified { background: rgba(59, 130, 246, 0.05); }
-    .kanban-grid tr.status-planned { background: rgba(59, 130, 246, 0.05); }
-    .kanban-grid tr.status-implementing { background: rgba(249, 115, 22, 0.05); }
-    .kanban-grid tr.status-implemented { background: rgba(168, 85, 247, 0.05); }
-    .kanban-grid tr.status-committed { background: rgba(34, 197, 94, 0.05); }
-    .kanban-grid tr.status-integrated { background: transparent; }
-
-    .kanban-grid tr.status-conceived:hover { background: rgba(234, 179, 8, 0.1); }
-    .kanban-grid tr.status-specified:hover { background: rgba(59, 130, 246, 0.1); }
-    .kanban-grid tr.status-planned:hover { background: rgba(59, 130, 246, 0.1); }
-    .kanban-grid tr.status-implementing:hover { background: rgba(249, 115, 22, 0.1); }
-    .kanban-grid tr.status-implemented:hover { background: rgba(168, 85, 247, 0.1); }
-    .kanban-grid tr.status-committed:hover { background: rgba(34, 197, 94, 0.1); }
 
     /* Project details row */
     .project-details-row td {
@@ -939,6 +919,56 @@
       color: var(--text-muted);
     }
 
+    /* Collapsible project sections */
+    .project-section {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-secondary);
+      margin-bottom: 12px;
+    }
+
+    .project-section summary {
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .project-section summary:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .project-section summary::marker {
+      content: '';
+    }
+
+    .project-section summary::before {
+      content: '▶';
+      font-size: 10px;
+      transition: transform 0.2s;
+      color: var(--text-muted);
+    }
+
+    .project-section[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .project-section .section-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: normal;
+    }
+
+    .project-section .kanban-grid {
+      margin: 0;
+      border-radius: 0 0 6px 6px;
+    }
+
     /* Terminal projects section */
     .terminal-projects {
       margin-top: 16px;
@@ -952,10 +982,28 @@
       cursor: pointer;
       font-size: 13px;
       color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .terminal-projects summary:hover {
       background: var(--bg-tertiary);
+    }
+
+    .terminal-projects summary::marker {
+      content: '';
+    }
+
+    .terminal-projects summary::before {
+      content: '▶';
+      font-size: 10px;
+      transition: transform 0.2s;
+      color: var(--text-muted);
+    }
+
+    .terminal-projects[open] summary::before {
+      transform: rotate(90deg);
     }
 
     .terminal-projects ul {
@@ -2306,53 +2354,95 @@
     // Get the lifecycle stages in order
     const LIFECYCLE_STAGES = ['conceived', 'specified', 'planned', 'implementing', 'implemented', 'committed', 'integrated'];
 
-    // Human-gated stages (require manual approval to proceed)
-    const HUMAN_GATED_STAGES = ['conceived', 'committed'];
+    // Abbreviated column headers
+    const STAGE_HEADERS = {
+      'conceived': "CONC'D",
+      'specified': 'SPEC\'D',
+      'planned': 'PLANNED',
+      'implementing': 'IMPL\'G',
+      'implemented': 'IMPL\'D',
+      'committed': 'CMTD',
+      'integrated': 'INTGR\'D'
+    };
 
     // Get stage index (for comparison)
     function getStageIndex(status) {
       return LIFECYCLE_STAGES.indexOf(status);
     }
 
-    // Render a stage cell with appropriate indicator
+    // Get the label and link for a stage cell
+    function getStageCellContent(project, stage) {
+      switch (stage) {
+        case 'specified':
+          if (project.files && project.files.spec) {
+            return { label: 'Spec', link: project.files.spec };
+          }
+          return { label: '', link: null };
+        case 'planned':
+          if (project.files && project.files.plan) {
+            return { label: 'Plan', link: project.files.plan };
+          }
+          return { label: '', link: null };
+        case 'implemented':
+          if (project.files && project.files.review) {
+            return { label: 'Review', link: project.files.review };
+          }
+          return { label: '', link: null };
+        case 'committed':
+          // PR link from notes (format: "PR #N merged")
+          if (project.notes) {
+            const prMatch = project.notes.match(/PR\s*#?(\d+)/i);
+            if (prMatch) {
+              return { label: 'PR', link: `https://github.com/cluesmith/codev/pull/${prMatch[1]}`, external: true };
+            }
+          }
+          return { label: '', link: null };
+        default:
+          return { label: '', link: null };
+      }
+    }
+
+    // Render a stage cell with appropriate styling
     function renderStageCell(project, stage) {
       const currentIndex = getStageIndex(project.status);
       const stageIndex = getStageIndex(stage);
 
-      let indicator = '';
+      let cellClass = 'stage-cell';
+      let content = '';
       let ariaLabel = '';
 
       if (stageIndex < currentIndex) {
-        // Completed stage
-        indicator = '<span class="stage-indicator stage-indicator--completed" aria-hidden="true">●</span>';
+        // Completed stage - green background
+        cellClass += ' stage-cell--complete';
         ariaLabel = `${stage}: completed`;
 
-        // Add link for completed stages with artifacts
-        const link = getStageLinkUrl(project, stage);
-        if (link) {
-          indicator = `<a href="#" onclick="openProjectFile('${link}'); return false;" class="stage-link" title="Open ${stage}">${indicator}</a>`;
+        const cellContent = getStageCellContent(project, stage);
+        if (cellContent.label && cellContent.link) {
+          if (cellContent.external) {
+            content = `<a href="${cellContent.link}" target="_blank" rel="noopener">${cellContent.label}</a>`;
+          } else {
+            content = `<a href="#" onclick="openProjectFile('${cellContent.link}'); return false;">${cellContent.label}</a>`;
+          }
         }
       } else if (stageIndex === currentIndex) {
-        // Current stage - use status color
-        const color = `var(--project-${project.status})`;
-        indicator = `<span class="stage-indicator stage-indicator--current" style="color: ${color}" aria-hidden="true">●</span>`;
+        // Current stage - orange background
+        cellClass += ' stage-cell--current';
         ariaLabel = `${stage}: current`;
 
-        // Add link for relevant stages
-        const link = getStageLinkUrl(project, stage);
-        if (link) {
-          indicator = `<a href="#" onclick="openProjectFile('${link}'); return false;" class="stage-link" title="Open ${stage}">${indicator}</a>`;
+        const cellContent = getStageCellContent(project, stage);
+        if (cellContent.label && cellContent.link) {
+          if (cellContent.external) {
+            content = `<a href="${cellContent.link}" target="_blank" rel="noopener">${cellContent.label}</a>`;
+          } else {
+            content = `<a href="#" onclick="openProjectFile('${cellContent.link}'); return false;">${cellContent.label}</a>`;
+          }
         }
       } else {
-        // Future stage
-        indicator = '<span class="stage-indicator stage-indicator--empty" aria-hidden="true">○</span>';
+        // Future stage - empty
         ariaLabel = `${stage}: pending`;
       }
 
-      // Add human gate indicator after conceived and committed columns
-      const gateIndicator = HUMAN_GATED_STAGES.includes(stage) ? '<span class="human-gate" title="Human approval required">🔒</span>' : '';
-
-      return `<td role="gridcell" aria-label="${ariaLabel}">${indicator}${gateIndicator}</td>`;
+      return `<td role="gridcell" class="${cellClass}" aria-label="${ariaLabel}">${content}</td>`;
     }
 
     // Get URL for stage-specific artifact
@@ -2493,13 +2583,10 @@
       renderProjectsTabContent();
     }
 
-    // Render the Kanban grid
-    function renderKanbanGrid(projects) {
-      // Filter out terminal states (abandoned, on-hold)
-      const activeProjects = projects.filter(p => !['abandoned', 'on-hold'].includes(p.status));
-
-      if (activeProjects.length === 0) {
-        return '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No active projects</p>';
+    // Render a table for a list of projects
+    function renderProjectTable(projectList) {
+      if (projectList.length === 0) {
+        return '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No projects</p>';
       }
 
       return `
@@ -2507,14 +2594,46 @@
           <thead>
             <tr role="row">
               <th role="columnheader">Project</th>
-              ${LIFECYCLE_STAGES.map(stage => `<th role="columnheader">${stage.toUpperCase()}</th>`).join('')}
+              ${LIFECYCLE_STAGES.map(stage => `<th role="columnheader">${STAGE_HEADERS[stage]}</th>`).join('')}
             </tr>
           </thead>
           <tbody>
-            ${activeProjects.map(p => renderProjectRow(p)).join('')}
+            ${projectList.map(p => renderProjectRow(p)).join('')}
           </tbody>
         </table>
       `;
+    }
+
+    // Render the Kanban grid with Active/Inactive sections
+    function renderKanbanGrid(projects) {
+      // Separate active (conceived through committed) from inactive (integrated)
+      const activeStatuses = ['conceived', 'specified', 'planned', 'implementing', 'implemented', 'committed'];
+      const activeProjects = projects.filter(p => activeStatuses.includes(p.status));
+      const inactiveProjects = projects.filter(p => p.status === 'integrated');
+
+      let html = '';
+
+      // Active section - expanded by default
+      if (activeProjects.length > 0 || inactiveProjects.length === 0) {
+        html += `
+          <details class="project-section" open>
+            <summary>Active <span class="section-count">(${activeProjects.length})</span></summary>
+            ${renderProjectTable(activeProjects)}
+          </details>
+        `;
+      }
+
+      // Inactive section - collapsed by default
+      if (inactiveProjects.length > 0) {
+        html += `
+          <details class="project-section">
+            <summary>Completed <span class="section-count">(${inactiveProjects.length})</span></summary>
+            ${renderProjectTable(inactiveProjects)}
+          </details>
+        `;
+      }
+
+      return html;
     }
 
     // Render the terminal projects section (abandoned, on-hold)
