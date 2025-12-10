@@ -830,7 +830,7 @@ Projects that are paused or canceled.
   - id: "0046"
     title: "CLI Command Reference Documentation"
     summary: "Reference documentation for codev, af, and consult CLI commands"
-    status: implementing
+    status: committed
     priority: medium
     release: null
     files:
@@ -839,7 +839,7 @@ Projects that are paused or canceled.
       review: null
     dependencies: ["0039"]
     tags: [documentation, cli]
-    notes: ""
+    notes: "PR #87 merged 2025-12-10."
 
 ## Next Available Number
 
