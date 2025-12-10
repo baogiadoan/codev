@@ -1183,7 +1183,7 @@ Projects that are paused or canceled.
     files:
       spec: codev/specs/0045-project-list-ui.md
       plan: codev/plans/0045-project-list-ui.md
-      review: null
+      review: codev/reviews/0045-project-list-ui.md
     dependencies: ["0007"]
     tags: [ui, dashboard, onboarding]
     timestamps:
@@ -1205,7 +1205,7 @@ Projects that are paused or canceled.
     files:
       spec: codev/specs/0046-cli-command-reference.md
       plan: codev/plans/0046-cli-command-reference.md
-      review: null
+      review: codev/reviews/0046-cli-command-reference.md
     dependencies: ["0039"]
     tags: [documentation, cli]
     timestamps:
