@@ -2666,20 +2666,10 @@
     // Check if a project was integrated in the last 24 hours
     function isRecentlyIntegrated(project) {
       if (project.status !== 'integrated') return false;
-      if (!project.notes) return false;
+      if (!project.integrated_at) return false;
 
-      // Look for ISO timestamp "Integrated: 2025-12-10T17:09:10-08:00" or fallback to date "2025-12-10"
-      const isoMatch = project.notes.match(/Integrated:\s*(\d{4}-\d{2}-\d{2}T[\d:+-]+)/);
-      const dateMatch = project.notes.match(/(\d{4}-\d{2}-\d{2})/);
-
-      let integratedDate;
-      if (isoMatch) {
-        integratedDate = new Date(isoMatch[1]);
-      } else if (dateMatch) {
-        integratedDate = new Date(dateMatch[1]);
-      } else {
-        return false;
-      }
+      const integratedDate = new Date(project.integrated_at);
+      if (isNaN(integratedDate.getTime())) return false;
 
       const now = new Date();
       const hoursDiff = (now - integratedDate) / (1000 * 60 * 60);
@@ -2692,10 +2682,31 @@
       // Separate active (conceived through committed) from inactive (integrated)
       const activeStatuses = ['conceived', 'specified', 'planned', 'implementing', 'implemented', 'committed'];
 
+      // Status order for sorting (higher index = further along)
+      const statusOrder = {
+        'conceived': 0,
+        'specified': 1,
+        'planned': 2,
+        'implementing': 3,
+        'implemented': 4,
+        'committed': 5,
+        'integrated': 6
+      };
+
       // Include recently integrated projects in Active section
       const activeProjects = projects.filter(p =>
         activeStatuses.includes(p.status) || isRecentlyIntegrated(p)
       );
+
+      // Sort active projects by completion (most complete first)
+      activeProjects.sort((a, b) => {
+        const orderA = statusOrder[a.status] || 0;
+        const orderB = statusOrder[b.status] || 0;
+        // Higher status first (descending), then by ID (ascending) for tie-breaker
+        if (orderB !== orderA) return orderB - orderA;
+        return a.id.localeCompare(b.id);
+      });
+
       const inactiveProjects = projects.filter(p =>
         p.status === 'integrated' && !isRecentlyIntegrated(p)
       );
