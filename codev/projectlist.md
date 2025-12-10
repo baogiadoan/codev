@@ -1261,11 +1261,33 @@ Projects that are paused or canceled.
       committed_at: "2025-12-10T00:02:19-08:00"
       integrated_at: "2025-12-10T00:22:32-08:00"
     notes: "Post-merge fixes: synced template to packages/codev, changed toggle text from Edit to Annotate"
+
+  - id: "0049"
+    title: "Preview Mode Annotations"
+    summary: "Allow adding REVIEW comments by clicking on elements in markdown preview mode"
+    status: conceived
+    priority: medium
+    release: null
+    files:
+      spec: codev/specs/0049-preview-annotations.md
+      plan: codev/plans/0049-preview-annotations.md
+      review: codev/reviews/0049-preview-annotations.md
+    dependencies: ["0048"]
+    tags: [dashboard, ui, markdown, annotations]
+    timestamps:
+      conceived_at: "2025-12-10T00:30:08-08:00"
+      specified_at: null
+      planned_at: null
+      implementing_at: null
+      implemented_at: null
+      committed_at: null
+      integrated_at: null
+    notes: ""
 ```
 
 ## Next Available Number
 
-**0049** - Reserve this number for your next project
+**0050** - Reserve this number for your next project
 
 ---
 
