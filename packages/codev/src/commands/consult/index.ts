@@ -303,18 +303,54 @@ async function runConsultation(
 }
 
 /**
+ * Prepare PR data files for consultation
+ */
+function preparePRData(prNumber: number, projectRoot: string): string {
+  const dataDir = path.join(projectRoot, '.consult', `pr-${String(prNumber).padStart(4, '0')}`);
+
+  // Create data directory
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+
+  try {
+    // Fetch PR info
+    console.error(`Fetching PR #${prNumber} data...`);
+    const prInfo = execSync(`gh pr view ${prNumber} --json title,body,state,author,baseRefName,headRefName,files,additions,deletions`, { encoding: 'utf-8' });
+    fs.writeFileSync(path.join(dataDir, 'pr-info.json'), prInfo);
+
+    // Fetch PR diff
+    const prDiff = execSync(`gh pr diff ${prNumber}`, { encoding: 'utf-8' });
+    fs.writeFileSync(path.join(dataDir, 'pr-diff.patch'), prDiff);
+
+    // Fetch PR comments
+    try {
+      const prComments = execSync(`gh pr view ${prNumber} --comments`, { encoding: 'utf-8' });
+      fs.writeFileSync(path.join(dataDir, 'pr-comments.txt'), prComments);
+    } catch {
+      fs.writeFileSync(path.join(dataDir, 'pr-comments.txt'), '(No comments)');
+    }
+
+    console.error(`PR data saved to ${dataDir}`);
+  } catch (err) {
+    throw new Error(`Failed to fetch PR data: ${err}`);
+  }
+
+  return dataDir;
+}
+
+/**
  * Build query for PR review
  */
 function buildPRQuery(prNumber: number, projectRoot: string): string {
-  const dataDir = path.join(projectRoot, '.consult', `pr-${String(prNumber).padStart(4, '0')}`);
+  const dataDir = preparePRData(prNumber, projectRoot);
 
   return `Review Pull Request #${prNumber}
 
 Available data files (read these to understand the PR):
-- PR Info: ${dataDir}/pr-info.txt
-- Comments: ${dataDir}/pr-comments.txt
+- PR Info (JSON): ${dataDir}/pr-info.json
 - Diff: ${dataDir}/pr-diff.patch
-- Files JSON: ${dataDir}/pr-files.json
+- Comments: ${dataDir}/pr-comments.txt
 
 Please review:
 1. Code quality and correctness
