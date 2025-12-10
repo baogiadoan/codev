@@ -536,6 +536,12 @@ export async function consult(options: ConsultOptions): Promise<void> {
       throw new Error(`Unknown subcommand: ${subcommand}\nValid subcommands: pr, spec, plan, general`);
   }
 
+  // Show the query/prompt being sent
+  console.error('');
+  console.error('='.repeat(60));
+  console.error('PROMPT:');
+  console.error('='.repeat(60));
+  console.error(query);
   console.error('');
   console.error('='.repeat(60));
   console.error(`[${model.toUpperCase()}] Starting consultation...`);
