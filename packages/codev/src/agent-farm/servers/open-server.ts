@@ -62,6 +62,7 @@ const langMap: Record<string, string> = {
   json: 'json', yaml: 'yaml', yml: 'yaml'
 };
 const lang = langMap[ext] || ext;
+const isMarkdown = ext === 'md';
 
 // Create server
 const server = http.createServer((req, res) => {
@@ -87,6 +88,7 @@ const server = http.createServer((req, res) => {
       template = template.replace(/\{\{FILE_PATH\}\}/g, fullFilePath);
       template = template.replace(/\{\{FILE\}\}/g, displayPath);
       template = template.replace(/\{\{LANG\}\}/g, lang);
+      template = template.replace(/\{\{IS_MARKDOWN\}\}/g, String(isMarkdown));
 
       // Inject file content
       // JSON.stringify escapes quotes but not </script> which would break HTML parsing
